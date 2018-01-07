@@ -27,11 +27,9 @@ let persons = [
     }
 ]
 
-  function getRandomInt(min, max) {
-    min = Math.ceil(min);
-    max = Math.floor(max);
-    return Math.floor(Math.random() * (max - min)) + min; //The maximum is exclusive and the minimum is inclusive
-  }
+function getRandomInt(max) {
+  return Math.floor(Math.random() * Math.floor(max));
+}
 app.get('/info', (req, res) => {
     const infoText = "<p>puhelinluettelossa on " + persons.length + " henkilön tiedot</p>";
     const timeStamp = "<br/><p> " + new Date() + "</p>";
@@ -60,7 +58,6 @@ app.get('/api/persons', (req, res) => {
   })
 
   app.post('/api/persons/', (request, response) => {
-    const maxId = persons.length > 0 ? persons.map(person => person.id).sort().reverse()[0] : 1
     const generatedId = getRandomInt(maxId, 10000)
     const body = request.body
     console.log("body",body)
