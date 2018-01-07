@@ -57,19 +57,32 @@ app.get('/api/persons', (req, res) => {
     response.status(204).end()
   })
 
-  app.post('/api/persons/', (request, response) => {
-    const generatedId = getRandomInt(maxId, 10000)
-    const body = request.body
-    console.log("body",body)
 
-    const person = {
+  function checkIfFieldIsDefined(object, name, response) {
+    if (!object) {
+      response.status(400).json({error: name + " missing"})
+      return false;
+    }
+    return true;
+  }
+  app.post('/api/persons/', (request, response) => {
+    const generatedId = getRandomInt(10000)
+    const body = request.body
+
+    const nameDefined = checkIfFieldIsDefined(body.name, "name", response);
+    const numberDefined = checkIfFieldIsDefined(body.number, "number", response);
+
+
+    if (nameDefined && numberDefined) {
+      const person = {
         name: body.name,
         number: body.number,
         id: generatedId
-    }
-
+      }
     persons.concat(person)
     response.json(person)
+    }
+
 
   })
   
