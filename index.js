@@ -25,6 +25,12 @@ const persons = [
     }
 ]
 
+app.get('/info', (req, res) => {
+    const infoText = "<p>puhelinluettelossa on " + persons.length + " henkilön tiedot</p>";
+    const timeStamp = "<br/><p> " + new Date() + "</p>";
+    res.send(infoText + timeStamp);
+})
+
 
 app.get('/api/persons', (req, res) => {
     res.json(persons)
