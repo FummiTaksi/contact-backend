@@ -65,6 +65,12 @@ app.get('/api/persons', (req, res) => {
     }
     return true;
   }
+
+  const getPersonWithName = (name) => {
+    return persons.find((person) => {
+        return person.name === name;
+    })
+  }
   app.post('/api/persons/', (request, response) => {
     const generatedId = getRandomInt(10000)
     const body = request.body
@@ -74,13 +80,19 @@ app.get('/api/persons', (req, res) => {
 
 
     if (nameDefined && numberDefined) {
-      const person = {
-        name: body.name,
-        number: body.number,
-        id: generatedId
+      if (getPersonWithName(body.name)) {
+        response.status(400).json({error: 'name must be unique'})
+      } 
+      else {
+        const person = {
+          name: body.name,
+          number: body.number,
+          id: generatedId
+        }
+      persons.concat(person)
+      response.json(person)
       }
-    persons.concat(person)
-    response.json(person)
+
     }
 
 
