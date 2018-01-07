@@ -1,30 +1,37 @@
 const express = require('express')
 const app = express()
+const bodyParser = require('body-parser')
+app.use(bodyParser.json())
 
 
 let persons = [
     {
-      "name": "Arto Hellas",
-      "number": "040-123456",
-      "id": 1
-        },
-    {
-      "name": "Martti Tienari",
-      "number": "040-123456",
-      "id": 2
+      name: 'Arto Hellas',
+      number: '040-123456',
+      id: 1
     },
     {
-      "name": "Arto Järvinen",
-      "number": "040-123456",
-      "id": 3
+      name: 'Martti Tienari',
+      number: '040-123456',
+      id: 2
     },
     {
-      "name": "Lea Kutvonen",
-      "number": "040-123456",
-      "id": 4
+      name: 'Arto Järvinen',
+      number: '040-123456',
+      id: 3
+    },
+    {
+      name: 'Lea Kutvonen',
+      number: '040-123456',
+      id: 4
     }
 ]
 
+  function getRandomInt(min, max) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min)) + min; //The maximum is exclusive and the minimum is inclusive
+  }
 app.get('/info', (req, res) => {
     const infoText = "<p>puhelinluettelossa on " + persons.length + " henkilön tiedot</p>";
     const timeStamp = "<br/><p> " + new Date() + "</p>";
@@ -50,6 +57,23 @@ app.get('/api/persons', (req, res) => {
     const id = Number(request.params.id)
     persons = persons.filter(person => person.id !== id)
     response.status(204).end()
+  })
+
+  app.post('/api/persons/', (request, response) => {
+    const maxId = persons.length > 0 ? persons.map(person => person.id).sort().reverse()[0] : 1
+    const generatedId = getRandomInt(maxId, 10000)
+    const body = request.body
+    console.log("body",body)
+
+    const person = {
+        name: body.name,
+        number: body.number,
+        id: generatedId
+    }
+
+    persons.concat(person)
+    response.json(person)
+
   })
   
   const PORT = 3001
