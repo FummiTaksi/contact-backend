@@ -2,6 +2,10 @@ const express = require('express')
 const app = express()
 const bodyParser = require('body-parser')
 const morgan = require('morgan')
+morgan.token('type', function (req, res) { 
+  console.log("req.headers",res.headers)
+  return JSON.stringify( req.headers['content-type'])
+})
 app.use(bodyParser.json())
 app.use(morgan('tiny'))
 
