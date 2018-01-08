@@ -7,7 +7,12 @@ morgan.token('type', function (req, res) {
   return JSON.stringify( req.headers['content-type'])
 })
 app.use(bodyParser.json())
-app.use(morgan('tiny'))
+
+morgan.token('bodyjson', function (req, res) {
+    return JSON.stringify(req.body);
+})
+
+app.use(morgan(':method :url :status :bodyjson :res[content-length] - :response-time ms'))
 
 
 let persons = [
