@@ -10,14 +10,41 @@ const Person = mongoose.model('Person', {
     number: String
   })
 
+  const alphabeticalOrder = (a, b) => {
+      if(a.name < b.name) return -1;
+      if(a.name > b.name) return 1;
+      return 0;
+  }
+
+  const returnEmpty = (amount) => {
+      let returnValue =  "";
+      for (let i = 0; i < amount; i++) {
+          returnValue += " ";
+      }
+      return returnValue;
+  }
+
+  const longestNameOfList = (list) => {
+    let longestName = -1;
+    list.forEach(person => {
+      let nameLength = person.name.length;
+      if (nameLength > longestName) {
+          longestName = nameLength
+      }
+    })
+    return longestName;
+  }
+
   if (process.argv.length === 2) {
-      console.log("puhelinluettelo")
+      console.log("puhelinluettelo:")
     Person
     .find({})
     .then(result => {
-      result.forEach(person => {
-        console.log(person.name + " " + person.number)
-      })
+      const list = result;
+      let longestName = longestNameOfList(list)
+      list.sort(alphabeticalOrder).forEach(person =>{
+        console.log(person.name + returnEmpty(longestName - person.name.length + 1)  + person.number)
+      });
       mongoose.connection.close()
     })
   }
