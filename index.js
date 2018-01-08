@@ -60,6 +60,9 @@ app.get('/api/persons', (req, res) => {
   .find({})
   .then(persons => {
     res.json(persons.map(formatPerson))
+  }).catch( error => {
+    console.log(error);
+    res.status(400).end()
   })
   })
 
