@@ -2,11 +2,13 @@ const express = require('express')
 const app = express()
 const bodyParser = require('body-parser')
 const morgan = require('morgan')
+const cors = require('cors')
 morgan.token('type', function (req, res) { 
   console.log("req.headers",res.headers)
   return JSON.stringify( req.headers['content-type'])
 })
 app.use(bodyParser.json())
+app.use(cors())
 
 morgan.token('bodyjson', function (req, res) {
     return JSON.stringify(req.body);
@@ -68,6 +70,30 @@ app.get('/api/persons', (req, res) => {
     response.status(204).end()
   })
 
+  app.put('/api/persons/:id', (request, response) => {
+    const id = Number(request.params.id);
+    const copyList = persons.slice();
+    const person = copyList.find((person) => {
+      return person.id === id;
+    })
+    if (person) {
+      changePersonsNumber(id, request.body.number);
+      response.status(200).end();
+    }
+    else {
+      response.status(400).end();
+    }
+  })
+
+  const changePersonsNumber = (id, number) => {
+    const copyList = persons.slice();
+    copyList.forEach((person) => {
+      if (person.id === id) {
+        person.number = number;
+      }
+    })
+    persons = copyList;
+  }
 
   function checkIfFieldIsDefined(object, name, response) {
     if (!object) {
