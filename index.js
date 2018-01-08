@@ -9,6 +9,7 @@ morgan.token('type', function (req, res) {
 })
 app.use(bodyParser.json())
 app.use(cors())
+app.use(express.static('build'))
 
 morgan.token('bodyjson', function (req, res) {
     return JSON.stringify(req.body);
