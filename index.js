@@ -3,9 +3,16 @@ const app = express()
 const bodyParser = require('body-parser')
 const morgan = require('morgan')
 const cors = require('cors')
-morgan.token('type', function (req, res) { 
-  console.log("req.headers",res.headers)
-  return JSON.stringify( req.headers['content-type'])
+const mongoose = require('mongoose')
+
+const url = 'mongodb://user:password@ds247327.mlab.com:47327/sandbox'
+
+mongoose.connect(url, { useMongoClient: true })
+mongoose.Promise = global.Promise
+
+const Person = mongoose.model('Person', {
+  name: String,
+  number: String
 })
 app.use(bodyParser.json())
 app.use(cors())
@@ -52,7 +59,11 @@ app.get('/info', (req, res) => {
 
 
 app.get('/api/persons', (req, res) => {
+  Person
+  .find({})
+  .then(persons => {
     res.json(persons)
+  })
   })
 
   app.get('/api/persons/:id', (request, response) => {
