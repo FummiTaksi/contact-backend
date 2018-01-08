@@ -3,17 +3,7 @@ const app = express()
 const bodyParser = require('body-parser')
 const morgan = require('morgan')
 const cors = require('cors')
-const mongoose = require('mongoose')
-
-const url = 'mongodb://user:password@ds247327.mlab.com:47327/sandbox'
-
-mongoose.connect(url, { useMongoClient: true })
-mongoose.Promise = global.Promise
-
-const Person = mongoose.model('Person', {
-  name: String,
-  number: String
-})
+const Person = require('./models/person')
 app.use(bodyParser.json())
 app.use(cors())
 app.use(express.static('build'))
@@ -48,6 +38,13 @@ let persons = [
     }
 ]
 
+const formatPerson = (person) => {
+  return ({
+    id: person._id,
+    name: person.name,
+    number: person.number
+  })
+}
 function getRandomInt(max) {
   return Math.floor(Math.random() * Math.floor(max));
 }
@@ -62,7 +59,7 @@ app.get('/api/persons', (req, res) => {
   Person
   .find({})
   .then(persons => {
-    res.json(persons)
+    res.json(persons.map(formatPerson))
   })
   })
 
