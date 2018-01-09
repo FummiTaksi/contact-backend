@@ -108,11 +108,13 @@ app.get('/api/persons', (req, res) => {
         name: body.name,
         number: body.number
       })
-      person.save().then((response) => {       
+      person.save().then((savedPerson) => {   
+        return formatPerson(savedPerson)
+      }).then(savedAndFormattedPerson => {
+        response.status(201).json(savedAndFormattedPerson)
       }).catch( error => {
         response.status(400).json(error)
       })
-      response.status(201).json(person)
     }
 
   })
