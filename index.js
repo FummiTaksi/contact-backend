@@ -23,9 +23,19 @@ const formatPerson = (person) => {
 }
 
 app.get('/info', (req, res) => {
+
+  Person
+  .find({})
+  .then(persons => {
     const infoText = "<p>puhelinluettelossa on " + persons.length + " henkilön tiedot</p>";
     const timeStamp = "<br/><p> " + new Date() + "</p>";
     res.send(infoText + timeStamp);
+
+  }).catch( error => {
+    console.log(error);
+    res.status(400).end()
+  })
+
 })
 
 
@@ -42,13 +52,11 @@ app.get('/api/persons', (req, res) => {
   })
 
   app.get('/api/persons/:id', (request, response) => {
-    const id = Number(request.params.id)
-    const person = persons.find(person => person.id === id)
-    if (person) {
-      response.json(person)
-    } else {
-      response.status(404).end()
-    }
+    Person.findById(request.params.id).then(person => {
+      response.status(200).json(formatPerson(person))
+    }).catch(error => {
+      response.status(404).send(error).end()
+    })
   })
 
   app.delete('/api/persons/:id', (request, response) => {
