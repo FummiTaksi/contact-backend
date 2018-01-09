@@ -55,6 +55,7 @@ app.get('/info', (req, res) => {
 })
 
 
+
 app.get('/api/persons', (req, res) => {
   Person
   .find({})
@@ -86,18 +87,20 @@ app.get('/api/persons', (req, res) => {
   })
 
   app.put('/api/persons/:id', (request, response) => {
-    const id = Number(request.params.id);
-    const copyList = persons.slice();
-    const person = copyList.find((person) => {
-      return person.id === id;
-    })
-    if (person) {
-      changePersonsNumber(id, request.body.number);
-      response.status(200).end();
-    }
-    else {
-      response.status(400).end();
-    }
+   console.log("PUT METODISSA!");
+   const body = request.body
+   const person = {
+     name: body.name,
+     number: body.number
+   }
+   console.log("request.params.id",request.params.id)
+   Person.findByIdAndUpdate(request.params.id, person, {new: false} )
+   .then(updatedPerson => {
+     response.json(formatPerson(updatedPerson))
+   })
+   .catch(error => {
+     response.status(400).send(error)
+   })
   })
 
   const changePersonsNumber = (id, number) => {
@@ -124,6 +127,7 @@ app.get('/api/persons', (req, res) => {
     })
   }
   app.post('/api/persons/', (request, response) => {
+    console.log("POST METODISSA")
     const generatedId = getRandomInt(10000)
     const body = request.body
 
