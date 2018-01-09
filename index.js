@@ -129,19 +129,13 @@ app.get('/api/persons', (req, res) => {
 
 
     if (nameDefined && numberDefined) {
-      if (getPersonWithName(body.name)) {
-        response.status(400).json({error: 'name must be unique'})
-      } 
-      else {
-        const person = {
-          name: body.name,
-          number: body.number,
-          id: generatedId
-        }
-      persons = persons.concat(person);
-      response.json(person)
-      }
-
+      const person = new Person({
+        name: body.name,
+        number: body.number
+      })
+      person.save().then((response) => {       
+      })
+      response.json(person);
     }
 
 
