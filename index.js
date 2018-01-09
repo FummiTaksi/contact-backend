@@ -14,30 +14,6 @@ morgan.token('bodyjson', function (req, res) {
 
 app.use(morgan(':method :url :status :bodyjson :res[content-length] - :response-time ms'))
 
-
-let persons = [
-    {
-      name: 'Arto Hellas',
-      number: '040-123456',
-      id: 1
-    },
-    {
-      name: 'Martti Tienari',
-      number: '040-123456',
-      id: 2
-    },
-    {
-      name: 'Arto Järvinen',
-      number: '040-123456',
-      id: 3
-    },
-    {
-      name: 'Lea Kutvonen',
-      number: '040-123456',
-      id: 4
-    }
-]
-
 const formatPerson = (person) => {
   return ({
     id: person._id,
@@ -45,9 +21,7 @@ const formatPerson = (person) => {
     number: person.number
   })
 }
-function getRandomInt(max) {
-  return Math.floor(Math.random() * Math.floor(max));
-}
+
 app.get('/info', (req, res) => {
     const infoText = "<p>puhelinluettelossa on " + persons.length + " henkilön tiedot</p>";
     const timeStamp = "<br/><p> " + new Date() + "</p>";
@@ -87,13 +61,11 @@ app.get('/api/persons', (req, res) => {
   })
 
   app.put('/api/persons/:id', (request, response) => {
-   console.log("PUT METODISSA!");
    const body = request.body
    const person = {
      name: body.name,
      number: body.number
    }
-   console.log("request.params.id",request.params.id)
    Person.findByIdAndUpdate(request.params.id, person, {new: false} )
    .then(updatedPerson => {
      response.json(formatPerson(updatedPerson))
@@ -103,16 +75,6 @@ app.get('/api/persons', (req, res) => {
    })
   })
 
-  const changePersonsNumber = (id, number) => {
-    const copyList = persons.slice();
-    copyList.forEach((person) => {
-      if (person.id === id) {
-        person.number = number;
-      }
-    })
-    persons = copyList;
-  }
-
   function checkIfFieldIsDefined(object, name, response) {
     if (!object) {
       response.status(400).json({error: name + " missing"})
@@ -121,13 +83,7 @@ app.get('/api/persons', (req, res) => {
     return true;
   }
 
-  const getPersonWithName = (name) => {
-    return persons.find((person) => {
-        return person.name === name;
-    })
-  }
   app.post('/api/persons/', (request, response) => {
-    console.log("POST METODISSA")
     const generatedId = getRandomInt(10000)
     const body = request.body
 
