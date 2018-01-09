@@ -104,7 +104,6 @@ app.get('/api/persons', (req, res) => {
       response.status(400).json({error: "name must be unique"})
     }
     else if (nameDefined && numberDefined) {
-      console.log("TÄÄLLÄ EI PITÄISI OLLA")
       const person = new Person({
         name: body.name,
         number: body.number
