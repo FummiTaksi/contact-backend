@@ -83,7 +83,7 @@ app.get('/api/persons', (req, res) => {
    })
   })
 
-  function checkIfFieldIsDefined(object, name, response) {
+  const checkIfFieldIsDefined = (object, name, response) => {
     if (!object) {
       response.status(400).json({error: name + " missing"})
       return false;
@@ -91,15 +91,20 @@ app.get('/api/persons', (req, res) => {
     return true;
   }
 
-  app.post('/api/persons/', (request, response) => {
-    const generatedId = getRandomInt(10000)
+ 
+
+  app.post('/api/persons/', async (request, response) => {
     const body = request.body
 
-    const nameDefined = checkIfFieldIsDefined(body.name, "name", response);
-    const numberDefined = checkIfFieldIsDefined(body.number, "number", response);
+    const nameDefined = await checkIfFieldIsDefined(body.name, "name", response);
+    const numberDefined = await checkIfFieldIsDefined(body.number, "number", response);
 
-
-    if (nameDefined && numberDefined) {
+    const personsWithBodysName = await Person.find({name : body.name})
+    if (personsWithBodysName.length > 0) {
+      response.status(400).json({error: "name must be unique"})
+    }
+    else if (nameDefined && numberDefined) {
+      console.log("TÄÄLLÄ EI PITÄISI OLLA")
       const person = new Person({
         name: body.name,
         number: body.number
@@ -110,7 +115,6 @@ app.get('/api/persons', (req, res) => {
       })
       response.status(201).json(person)
     }
-
 
   })
   
