@@ -134,8 +134,10 @@ app.get('/api/persons', (req, res) => {
         number: body.number
       })
       person.save().then((response) => {       
+      }).catch( error => {
+        response.status(400).json(error)
       })
-      response.json(person);
+      response.status(201).json(person)
     }
 
 
