@@ -85,10 +85,8 @@ app.get('/api/persons', (req, res) => {
 
   const checkIfFieldIsDefined = (object, name, response) => {
     if (!object) {
-      response.status(400).json({error: name + " missing"})
-      return false;
+      return response.status(400).json({error: name + " missing"})
     }
-    return true;
   }
 
  
@@ -101,7 +99,7 @@ app.get('/api/persons', (req, res) => {
 
     const personsWithBodysName = await Person.find({name : body.name})
     if (personsWithBodysName.length > 0) {
-      response.status(400).json({error: "name must be unique"})
+      return response.status(400).json({error: "name must be unique"})
     }
     else if (nameDefined && numberDefined) {
       const person = new Person({
